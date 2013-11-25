@@ -1,20 +1,25 @@
 package com.assemblr.arena06.common.data;
 
 import com.assemblr.arena06.common.data.map.generators.MapGenerator;
+import com.assemblr.arena06.common.utils.Fonts;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
 public class Player extends Sprite {
     
+    private final boolean self;
     @Serialize private String name;
     
     public Player() {
-        this("Player");
+        this(false, "Player");
     }
     
-    public Player(String name) {
+    public Player(boolean self, String name) {
+        this.self = self;
         this.name = name;
         width = height = MapGenerator.TILE_SIZE - 10;
     }
@@ -26,6 +31,19 @@ public class Player extends Sprite {
     public void render(Graphics2D g) {
         g.setColor(getColor());
         g.fill(new Rectangle2D.Double(0, 0, width, height));
+        
+        if (!self) {
+            Font f = Fonts.FONT_PRIMARY.deriveFont(8f);
+            FontMetrics metrics = g.getFontMetrics(f);
+            Rectangle2D bounds = metrics.getStringBounds(name, g);
+            
+            g.setColor(new Color(0x88000000, true));
+            g.fillRect((int) (-bounds.getWidth()/2 - 5 + getWidth()/2), (int) (-bounds.getHeight() - 13), (int) bounds.getWidth() + 10, (int) bounds.getHeight() + 8);
+            
+            g.setColor(Color.WHITE);
+            g.setFont(f);
+            g.drawString(name, (int) (-bounds.getWidth()/2 + getWidth()/2), -9);
+        }
     }
     
     public String getName() {
