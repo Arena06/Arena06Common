@@ -1,5 +1,7 @@
 package com.assemblr.arena06.common.utils;
 
+import java.awt.geom.Point2D;
+
 
 public class Vector2D {
     
@@ -64,7 +66,33 @@ public class Vector2D {
         this.y = y;
     }
     
+    public Vector2D(double angle, double magnitude, boolean useAngle) {
+        if (useAngle) {
+        x = Math.cos(angle) * magnitude;
+        y = Math.sin(angle) * magnitude;
+        } else {
+            
+        }
+    }
+    
+    public double getAngle() {
+        if (x > 0) {
+            return Math.atan(y / x);
+        }
+        else {
+            return Math.atan(y / x) + Math.PI;
+        }
+    }
+    
+    public Point2D.Double getPoint() {
+        return new Point2D.Double(x, y);
+    }
     public Vector2D add(Vector2D o) {
+        x += o.x;
+        y += o.y;
+        return this;
+    }
+    public Vector2D add(Point2D.Double o) {
         x += o.x;
         y += o.y;
         return this;

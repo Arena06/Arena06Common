@@ -1,12 +1,16 @@
 package com.assemblr.arena06.common.data;
 
+import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.data.map.generators.MapGenerator;
+import com.assemblr.arena06.common.packet.Packet;
 import com.assemblr.arena06.common.utils.Dimension2D;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Sprite implements Renderable {
@@ -78,12 +82,20 @@ public abstract class Sprite implements Renderable {
         return (int) (x / MapGenerator.TILE_SIZE);
     }
     
+    public int getTileXRightSide() {
+        return (int) ((x + getWidth())/ MapGenerator.TILE_SIZE);
+    }
+    
     public void setTileX(int x) {
         this.x = x * MapGenerator.TILE_SIZE;
     }
     
     public int getTileY() {
         return (int) (y / MapGenerator.TILE_SIZE);
+    }
+    
+    public int getTileYBottom() {
+        return (int) ((y + getHeight())/ MapGenerator.TILE_SIZE);
     }
     
     public void setTileY(int y) {
@@ -142,6 +154,10 @@ public abstract class Sprite implements Renderable {
         y = bounds.getY();
         width = bounds.getWidth();
         height = bounds.getHeight();
+    }
+    
+    public List<Packet> onContact(Sprite interactor, int interactorID, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
+        return new ArrayList<Packet>();
     }
     
 }
