@@ -6,6 +6,7 @@ import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bullet extends MovingSprite{
@@ -17,12 +18,16 @@ public class Bullet extends MovingSprite{
     }
 
     @Override
-    public List<Packet> onContact(Sprite interactor, int interactorID, List<Integer> spritesPendingRemoveal, ChatBroadcaster chatter) {
+    public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> spritesPendingRemoveal, ChatBroadcaster chatter) {
         if (interactor instanceof Player) {
-            spritesPendingRemoveal.add(interactorID);
+            if (!((Player) interactor).isAlive())
+                return new ArrayList<Packet>();
             chatter.sendChatBroadcast("~ Player " + ((Player) interactor).getName() + " was killed by " + owner);
+            spritesPendingRemoveal.add(interactorID);
+            spritesPendingRemoveal.add(selfID);
+            
         }
-        return super.onContact(interactor, interactorID, spritesPendingRemoveal, chatter);
+        return new ArrayList<Packet>();
     }
 
     /**

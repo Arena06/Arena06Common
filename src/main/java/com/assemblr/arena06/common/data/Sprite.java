@@ -156,7 +156,7 @@ public abstract class Sprite implements Renderable {
         height = bounds.getHeight();
     }
     
-    public List<Packet> onContact(Sprite interactor, int interactorID, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
+    public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
         return new ArrayList<Packet>();
     }
     

@@ -12,6 +12,9 @@ import java.awt.geom.Rectangle2D;
 public class Player extends Sprite {
     
     private final boolean self;
+    private boolean clientIsCurrent = true;
+    @Serialize private double life = 1;
+    @Serialize private boolean alive = false;
     @Serialize private String name;
     
     public Player() {
@@ -29,6 +32,9 @@ public class Player extends Sprite {
     }
     
     public void render(Graphics2D g) {
+        if (!alive) {
+            return;
+        }
         g.setColor(getColor());
         g.fill(new Rectangle2D.Double(0, 0, width, height));
         
@@ -52,6 +58,32 @@ public class Player extends Sprite {
     
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void kill() {
+        this.alive = false;
+    }
+    
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    /**
+     * @return the clientIsCurrent
+     */
+    public boolean isClientIsCurrent() {
+        return clientIsCurrent;
+    }
+
+    /**
+     * @param clientIsCurrent the clientIsCurrent to set
+     */
+    public void setClientIsCurrent(boolean clientIsCurrent) {
+        this.clientIsCurrent = clientIsCurrent;
     }
     
 }
