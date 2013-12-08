@@ -1,6 +1,7 @@
 package com.assemblr.arena06.common.data;
 
 import com.assemblr.arena06.common.data.map.generators.MapGenerator;
+import com.assemblr.arena06.common.data.weapon.Weapon;
 import com.assemblr.arena06.common.utils.Fonts;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.Color;
@@ -13,6 +14,12 @@ public class Player extends Sprite {
     
     private final boolean self;
     private boolean clientIsCurrent = true;
+    private Weapon weapon = Weapon.BERETTA_93R;
+    
+    @Serialize private int loadedBullets;
+    private double cooldownRemaining;
+    private double reloadRemaining;
+    @Serialize private boolean isReloading;
     @Serialize private double life = 1;
     @Serialize private boolean alive = false;
     @Serialize private String name;
@@ -25,6 +32,7 @@ public class Player extends Sprite {
         this.self = self;
         this.name = name;
         width = height = MapGenerator.TILE_SIZE - 10;
+        loadedBullets = weapon.getMagSize();
     }
     
     public Color getColor() {
@@ -69,6 +77,9 @@ public class Player extends Sprite {
     }
     
     public void setAlive(boolean alive) {
+        if (this.alive == false && alive) {
+            this.setLife(1);
+        }
         this.alive = alive;
     }
 
@@ -98,6 +109,80 @@ public class Player extends Sprite {
      */
     public void setLife(double life) {
         this.life = life;
+    }
+
+    /**
+     * @return the weapon
+     */
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    /**
+     * @param weapon the weapon to set
+     */
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    /**
+     * @return the loadedBullets
+     */
+    public int getLoadedBullets() {
+        return loadedBullets;
+    }
+
+    /**
+     * @param loadedBullets the loadedBullets to set
+     */
+    public void setLoadedBullets(int loadedBullets) {
+        this.loadedBullets = loadedBullets;
+    }
+
+    /**
+     * @return the timeCoolingDown
+     */
+    public double cooldownRemaining() {
+        return cooldownRemaining;
+    }
+
+    /**
+     * @param timeCoolingDown the timeCoolingDown to set
+     */
+    public void setCooldownRemaining(double timeCoolingDown) {
+        this.cooldownRemaining = timeCoolingDown;
+    }
+
+    /**
+     * @return the timeRreloading
+     */
+    public double getReloadRemaining() {
+        return reloadRemaining;
+    }
+
+    /**
+     * @param timeRreloading the timeRreloading to set
+     */
+    public void setReloadRemaining(double timeRreloading) {
+        this.reloadRemaining = timeRreloading;
+    }
+
+    /**
+     * @return the isReloading
+     */
+    public boolean isReloading() {
+        return isReloading;
+    }
+
+    /**
+     * @param isReloading the isReloading to set
+     */
+    public void setIsReloading(boolean isReloading) {
+        this.isReloading = isReloading;
+    }
+    
+    public void fillMagazine() {
+        this.loadedBullets = weapon.getMagSize();
     }
     
 }

@@ -39,6 +39,22 @@ public class Vector2D {
         return value;
     }
     
+    
+    public static double getAngle(Vector2D vector) {
+        double x = vector.x;
+        double y = vector.y;
+        if (x > 0) {
+            return Math.atan(y / x);
+        }
+        else if (x < 0) {
+            return Math.atan(y / x) + Math.PI;
+        } else if (y > 0) {
+            return -Math.PI / 2;
+        } else {
+            return Math.PI / 2;
+        }
+    }
+    
     public static Vector2D scale(Vector2D vector, double length) {
         return new Vector2D(vector).normalize().multiply(length);
     }
@@ -75,13 +91,11 @@ public class Vector2D {
         }
     }
     
-    public double getAngle() {
-        if (x > 0) {
-            return Math.atan(y / x);
-        }
-        else {
-            return Math.atan(y / x) + Math.PI;
-        }
+    public Vector2D setAngle(double angle) {
+        double magnitude = length(this);
+        x = Math.cos(angle) * magnitude;
+        y = Math.sin(angle) * magnitude;
+        return this;
     }
     
     public Point2D.Double getPoint() {
@@ -95,6 +109,13 @@ public class Vector2D {
     public Vector2D add(Point2D.Double o) {
         x += o.x;
         y += o.y;
+        return this;
+    }
+    
+    public Vector2D addAngle(double angle) {
+        double originalAngle = getAngle(this);
+        double newAngle = originalAngle + angle;
+        this.setAngle(newAngle);
         return this;
     }
     
