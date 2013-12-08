@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Bullet extends MovingSprite{
     @Serialize private String owner = "";
-    
+    @Serialize private double damage;
     public void render(Graphics2D g) {
         g.setColor(Color.red);
         g.fill(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
@@ -22,8 +22,12 @@ public class Bullet extends MovingSprite{
         if (interactor instanceof Player) {
             if (!((Player) interactor).isAlive())
                 return new ArrayList<Packet>();
-            chatter.sendChatBroadcast("~ Player " + ((Player) interactor).getName() + " was killed by " + owner);
-            spritesPendingRemoveal.add(interactorID);
+            Player player = (Player) interactor;
+            player.setLife(player.getLife() - getDamage());
+            if (player.getLife() < 0) {
+                chatter.sendChatBroadcast("~ Player " + ((Player) interactor).getName() + " was killed by " + owner);
+                spritesPendingRemoveal.add(interactorID);
+            }
             spritesPendingRemoveal.add(selfID);
             
         }
@@ -42,6 +46,20 @@ public class Bullet extends MovingSprite{
      */
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    /**
+     * @return the damage
+     */
+    public double getDamage() {
+        return damage;
+    }
+
+    /**
+     * @param damage the damage to set
+     */
+    public void setDamage(double damage) {
+        this.damage = damage;
     }
     
     

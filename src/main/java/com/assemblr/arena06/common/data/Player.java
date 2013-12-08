@@ -85,5 +85,19 @@ public class Player extends Sprite {
     public void setClientIsCurrent(boolean clientIsCurrent) {
         this.clientIsCurrent = clientIsCurrent;
     }
+
+    /**
+     * @return the life
+     */
+    public double getLife() {
+        return life;
+    }
+
+    /**
+     * @param life the life to set
+     */
+    public void setLife(double life) {
+        this.life = life;
+    }
     
 }
