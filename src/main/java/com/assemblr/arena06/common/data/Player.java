@@ -2,6 +2,7 @@ package com.assemblr.arena06.common.data;
 
 import com.assemblr.arena06.common.data.map.generators.MapGenerator;
 import com.assemblr.arena06.common.data.weapon.Weapon;
+import com.assemblr.arena06.common.data.weapon.WeaponInfo;
 import com.assemblr.arena06.common.utils.Fonts;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.Color;
@@ -9,17 +10,15 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends Sprite {
     
     private final boolean self;
     private boolean clientIsCurrent = true;
-    private Weapon weapon = Weapon.BERETTA_93R;
-    
-    @Serialize private int loadedBullets;
-    private double cooldownRemaining;
-    private double reloadRemaining;
-    @Serialize private boolean isReloading;
+    private List<WeaponInfo> weaponsData;
+    private int weaponIndex;
     @Serialize private double life = 1;
     @Serialize private boolean alive = false;
     @Serialize private String name;
@@ -32,7 +31,11 @@ public class Player extends Sprite {
         this.self = self;
         this.name = name;
         width = height = MapGenerator.TILE_SIZE - 10;
-        loadedBullets = weapon.getMagSize();
+        weaponsData = new ArrayList<WeaponInfo>();
+        weaponsData.add(new WeaponInfo(Weapon.AK_47));
+        weaponsData.add(new WeaponInfo(Weapon.LEE_ENFIELD));
+        weaponsData.add(new WeaponInfo(Weapon.BERETTA_93R));
+        weaponsData.add(new WeaponInfo(Weapon.SHOTGUN));
     }
     
     public Color getColor() {
@@ -115,74 +118,84 @@ public class Player extends Sprite {
      * @return the weapon
      */
     public Weapon getWeapon() {
-        return weapon;
+        return weaponsData.get(weaponIndex).getWeapon();
     }
 
+    public void incrementWeaponIndex(int amount) {
+        weaponIndex += amount;
+        weaponIndex += weaponsData.size() * 3;
+        weaponIndex = weaponIndex % weaponsData.size();
+    }
     /**
      * @param weapon the weapon to set
      */
     public void setWeapon(Weapon weapon) {
-        this.weapon = weapon;
+        for (int i = 0; i < weaponsData.size(); i++) {
+            if (weaponsData.get(i).getWeapon().equals(weapon)) {
+                weaponIndex = i;
+                break;
+            }
+        }
     }
 
     /**
      * @return the loadedBullets
      */
     public int getLoadedBullets() {
-        return loadedBullets;
+        return weaponsData.get(weaponIndex).getLoadedBullets();
     }
 
     /**
      * @param loadedBullets the loadedBullets to set
      */
     public void setLoadedBullets(int loadedBullets) {
-        this.loadedBullets = loadedBullets;
+        this.weaponsData.get(weaponIndex).setLoadedBullets(loadedBullets);
     }
 
     /**
      * @return the timeCoolingDown
      */
     public double cooldownRemaining() {
-        return cooldownRemaining;
+        return weaponsData.get(weaponIndex).getCooldownRemaining();
     }
 
     /**
      * @param timeCoolingDown the timeCoolingDown to set
      */
     public void setCooldownRemaining(double timeCoolingDown) {
-        this.cooldownRemaining = timeCoolingDown;
+        this.weaponsData.get(weaponIndex).setCooldownRemaining(timeCoolingDown);
     }
 
     /**
      * @return the timeRreloading
      */
     public double getReloadRemaining() {
-        return reloadRemaining;
+        return weaponsData.get(weaponIndex).getReloadRemaining();
     }
 
     /**
      * @param timeRreloading the timeRreloading to set
      */
     public void setReloadRemaining(double timeRreloading) {
-        this.reloadRemaining = timeRreloading;
+        this.weaponsData.get(weaponIndex).setReloadRemaining(timeRreloading);
     }
 
     /**
      * @return the isReloading
      */
     public boolean isReloading() {
-        return isReloading;
+        return weaponsData.get(weaponIndex).isReloading();
     }
 
     /**
      * @param isReloading the isReloading to set
      */
     public void setIsReloading(boolean isReloading) {
-        this.isReloading = isReloading;
+        this.weaponsData.get(weaponIndex).setReloading(isReloading);
     }
     
     public void fillMagazine() {
-        this.loadedBullets = weapon.getMagSize();
+        this.weaponsData.get(weaponIndex).setLoadedBullets(weaponsData.get(weaponIndex).getWeapon().getMagSize());
     }
     
 }
