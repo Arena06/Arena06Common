@@ -197,5 +197,7 @@ public class Player extends Sprite {
     public void fillMagazine() {
         this.weaponsData.get(weaponIndex).setLoadedBullets(weaponsData.get(weaponIndex).getWeapon().getMagSize());
     }
-    
+    public WeaponInfo getWeaponData() {
+        return weaponsData.get(weaponIndex);
+    }
 }
