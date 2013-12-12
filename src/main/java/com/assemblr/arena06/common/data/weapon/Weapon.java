@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Weapon {
-    BERETTA_93R("Beretta 93R machine pistol", 3, .07, 1.1, true, new BulletFactory() {
+    BERETTA_93R("Pistol", 3, .07, 1.1, true, new BulletFactory() {
         public List<Bullet> getBullets() {
             ArrayList<Bullet> bullets = new ArrayList<Bullet>();
             bullets.add(new Bullet());
@@ -17,18 +17,18 @@ public enum Weapon {
             return bullets;
         }
     }),
-    AK_47("AKM assault rifle", 24, .12, 3, true, new BulletFactory() {
+    AK_47("Assault Rifle", 24, .12, 3, true, new BulletFactory() {
         public List<Bullet> getBullets() {
             ArrayList<Bullet> bullets = new ArrayList<Bullet>();
             bullets.add(new Bullet());
             bullets.get(0).setVelocity(new Vector2D(Math.random() * Math.PI / 9 - Math.PI / 18, 1200, true));
             bullets.get(0).setWidth(6);
             bullets.get(0).setHeight(6);
-            bullets.get(0).setDamage(1.1);
+            bullets.get(0).setDamage(.4);
             return bullets;
         }
     }),
-    LEE_ENFIELD("Lee Enfield bolt action rifle", 1, .1, 2, false, new BulletFactory() {
+    LEE_ENFIELD("Sniper Rifle", 1, .1, 2, false, new BulletFactory() {
         public List<Bullet> getBullets() {
             ArrayList<Bullet> bullets = new ArrayList<Bullet>();
             bullets.add(new Bullet());
@@ -39,7 +39,7 @@ public enum Weapon {
             return bullets;
         }
     }),
-    SHOTGUN("Double barrel shotgun", 2, .07, 2, false, new BulletFactory() {
+    SHOTGUN("Shotgun", 3, .07, 2, false, new BulletFactory() {
         public List<Bullet> getBullets() {
             ArrayList<Bullet> bullets = new ArrayList<Bullet>();
             for (int i = 0; i < 8; i++) {
@@ -47,7 +47,7 @@ public enum Weapon {
                 b.setWidth(4);
                 b.setHeight(4);
                 b.setVelocity(new Vector2D(Math.random() * Math.PI / 9 - Math.PI / 18, 1000, true));
-                b.setDamage(.26);
+                b.setDamage(.12);
                 bullets.add(b);
             }
             return bullets;
