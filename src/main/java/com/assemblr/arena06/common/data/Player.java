@@ -35,7 +35,7 @@ public class Player extends Sprite {
         weaponsData.add(new WeaponInfo(Weapon.AK_47));
         weaponsData.add(new WeaponInfo(Weapon.LEE_ENFIELD));
         weaponsData.add(new WeaponInfo(Weapon.BERETTA_93R));
-        weaponsData.add(new WeaponInfo(Weapon.SHOTGUN));
+        weaponsData.add(new WeaponInfo(Weapon.WINCHESTER_MODEL_21));
     }
     
     public Color getColor() {
@@ -82,6 +82,9 @@ public class Player extends Sprite {
     public void setAlive(boolean alive) {
         if (this.alive == false && alive) {
             this.setLife(1);
+            for (WeaponInfo wi : weaponsData) {
+                wi.resetAmoAmount();
+            }
         }
         this.alive = alive;
     }
