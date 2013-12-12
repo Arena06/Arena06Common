@@ -42,7 +42,7 @@ public enum Weapon {
     SHOTGUN("Shotgun", 3, .07, 2, false, new BulletFactory() {
         public List<Bullet> getBullets() {
             ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 20; i++) {
                 Bullet b = new Bullet();
                 b.setWidth(4);
                 b.setHeight(4);

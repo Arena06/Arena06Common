@@ -115,4 +115,8 @@ public class WeaponInfo {
     public void setOutOfAmo(boolean outOfAmo) {
         this.outOfAmo = outOfAmo;
     }
+    
+    public void resetAmoAmount() {
+        this.cartregesReamaining = 5;
+    }
 }
