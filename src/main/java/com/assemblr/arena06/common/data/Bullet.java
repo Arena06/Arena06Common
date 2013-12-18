@@ -18,16 +18,18 @@ public class Bullet extends MovingSprite{
     }
 
     @Override
-    public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> spritesPendingRemoveal, ChatBroadcaster chatter) {
+    public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> dirtySprites, List<Integer> spritesPendingRemoveal, ChatBroadcaster chatter) {
         if (interactor instanceof Player) {
             if (!((Player) interactor).isAlive())
                 return new ArrayList<Packet>();
             Player player = (Player) interactor;
             player.setLife(player.getLife() - getDamage());
             if (player.getLife() < 0) {
+                
                 chatter.sendChatBroadcast("~ Player " + ((Player) interactor).getName() + " was killed by " + owner);
                 spritesPendingRemoveal.add(interactorID);
             }
+            dirtySprites.add(interactorID);
             spritesPendingRemoveal.add(selfID);
             
         }

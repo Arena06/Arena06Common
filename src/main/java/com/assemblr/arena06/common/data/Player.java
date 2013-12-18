@@ -13,7 +13,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player extends Sprite {
+public class Player extends MovingSprite {
     
     private final boolean self;
     private boolean clientIsCurrent = true;
