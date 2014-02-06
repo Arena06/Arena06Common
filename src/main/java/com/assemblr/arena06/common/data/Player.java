@@ -1,8 +1,10 @@
 package com.assemblr.arena06.common.data;
 
+import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.data.map.generators.MapGenerator;
 import com.assemblr.arena06.common.data.weapon.Weapon;
 import com.assemblr.arena06.common.data.weapon.WeaponInfo;
+import com.assemblr.arena06.common.packet.Packet;
 import com.assemblr.arena06.common.utils.Fonts;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.Color;
@@ -17,11 +19,13 @@ public class Player extends MovingSprite {
     
     private final boolean self;
     private boolean clientIsCurrent = true;
-    private List<WeaponInfo> weaponsData;
+    @Serialize private List<WeaponInfo> weaponsData;
     private int weaponIndex;
     @Serialize private double life = 1;
     @Serialize private boolean alive = false;
     @Serialize private String name;
+    //@Serialize private int newCartregesRemainingPendingInsertion = -1;
+    //@Serialize private int weaponIndexForPendingCartreges = -1;
     
     public Player() {
         this(false, "Player");
@@ -32,10 +36,9 @@ public class Player extends MovingSprite {
         this.name = name;
         width = height = MapGenerator.TILE_SIZE - 10;
         weaponsData = new ArrayList<WeaponInfo>();
-        weaponsData.add(new WeaponInfo(Weapon.BERETTA_93R));
-        weaponsData.add(new WeaponInfo(Weapon.AK_47));
-        weaponsData.add(new WeaponInfo(Weapon.LEE_ENFIELD));
-        weaponsData.add(new WeaponInfo(Weapon.SHOTGUN));
+        for (Weapon w : Weapon.values()) {
+            weaponsData.add(new WeaponInfo(w));
+        }
     }
     
     public Color getColor() {
@@ -82,7 +85,7 @@ public class Player extends MovingSprite {
     public void setAlive(boolean alive) {
         if (this.alive == false && alive) {
             this.setLife(1);
-            for (WeaponInfo wi : weaponsData) {
+            for (WeaponInfo wi : getWeaponsData()) {
                 wi.resetAmoAmount();
             }
         }
@@ -121,20 +124,20 @@ public class Player extends MovingSprite {
      * @return the weapon
      */
     public Weapon getWeapon() {
-        return weaponsData.get(weaponIndex).getWeapon();
+        return getWeaponsData().get(weaponIndex).getWeapon();
     }
 
     public void incrementWeaponIndex(int amount) {
         weaponIndex += amount;
-        weaponIndex += weaponsData.size() * 3;
-        weaponIndex = weaponIndex % weaponsData.size();
+        weaponIndex += getWeaponsData().size() * 3;
+        weaponIndex = weaponIndex % getWeaponsData().size();
     }
     /**
      * @param weapon the weapon to set
      */
     public void setWeapon(Weapon weapon) {
-        for (int i = 0; i < weaponsData.size(); i++) {
-            if (weaponsData.get(i).getWeapon().equals(weapon)) {
+        for (int i = 0; i < getWeaponsData().size(); i++) {
+            if (getWeaponsData().get(i).getWeapon().equals(weapon)) {
                 weaponIndex = i;
                 break;
             }
@@ -145,62 +148,143 @@ public class Player extends MovingSprite {
      * @return the loadedBullets
      */
     public int getLoadedBullets() {
-        return weaponsData.get(weaponIndex).getLoadedBullets();
+        return getWeaponsData().get(weaponIndex).getLoadedBullets();
     }
 
     /**
      * @param loadedBullets the loadedBullets to set
      */
     public void setLoadedBullets(int loadedBullets) {
-        this.weaponsData.get(weaponIndex).setLoadedBullets(loadedBullets);
+        this.getWeaponsData().get(weaponIndex).setLoadedBullets(loadedBullets);
     }
 
     /**
      * @return the timeCoolingDown
      */
     public double cooldownRemaining() {
-        return weaponsData.get(weaponIndex).getCooldownRemaining();
+        return getWeaponsData().get(weaponIndex).getCooldownRemaining();
     }
 
     /**
      * @param timeCoolingDown the timeCoolingDown to set
      */
     public void setCooldownRemaining(double timeCoolingDown) {
-        this.weaponsData.get(weaponIndex).setCooldownRemaining(timeCoolingDown);
+        this.getWeaponsData().get(weaponIndex).setCooldownRemaining(timeCoolingDown);
     }
 
     /**
      * @return the timeRreloading
      */
     public double getReloadRemaining() {
-        return weaponsData.get(weaponIndex).getReloadRemaining();
+        return getWeaponsData().get(weaponIndex).getReloadRemaining();
     }
 
     /**
      * @param timeRreloading the timeRreloading to set
      */
     public void setReloadRemaining(double timeRreloading) {
-        this.weaponsData.get(weaponIndex).setReloadRemaining(timeRreloading);
+        this.getWeaponsData().get(weaponIndex).setReloadRemaining(timeRreloading);
     }
 
     /**
      * @return the isReloading
      */
     public boolean isReloading() {
-        return weaponsData.get(weaponIndex).isReloading();
+        return getWeaponsData().get(weaponIndex).isReloading();
     }
 
     /**
      * @param isReloading the isReloading to set
      */
     public void setIsReloading(boolean isReloading) {
-        this.weaponsData.get(weaponIndex).setReloading(isReloading);
+        this.getWeaponsData().get(weaponIndex).setReloading(isReloading);
     }
     
     public void fillMagazine() {
-        this.weaponsData.get(weaponIndex).setLoadedBullets(weaponsData.get(weaponIndex).getWeapon().getMagSize());
+        this.getWeaponsData().get(weaponIndex).setLoadedBullets(getWeaponsData().get(weaponIndex).getWeapon().getMagSize());
     }
     public WeaponInfo getWeaponData() {
-        return weaponsData.get(weaponIndex);
+        WeaponInfo value = getWeaponsData().get(weaponIndex);
+        return value;
     }
+    public WeaponInfo getWeaponData(int weaponIndex) {
+        WeaponInfo value = getWeaponsData().get(weaponIndex);
+        return value;
+    }
+    public WeaponInfo getWeaponData(Weapon weapon) {
+        for (WeaponInfo wi : getWeaponsData()) {
+            if (wi.getWeapon() == weapon)
+                return wi;
+        }
+        return null;
+    }
+
+    @Override
+    public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> dirtySprites, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
+        if (interactor instanceof AmoPickup && isAlive()) {
+            WeaponInfo wi = getWeaponData(((AmoPickup)interactor).getWeapon());//Update Localy
+            wi.setCartregesReamaining(wi.getCartregesReamaining() + ((AmoPickup)interactor).getAmount());
+            spritesPendingRemoveal.add(interactorID);
+            
+            //Use primatives to tell client to update
+            setNewCartregesRemainingPendingInsertion(wi.getCartregesReamaining() + ((AmoPickup)interactor).getAmount());
+            for (int i = 0; i < getWeaponsData().size(); i++) {
+                if (getWeaponsData().get(i).getWeapon().equals(wi.getWeapon())) {
+                    setWeaponIndexForPendingCartreges(i);
+                    break;
+                }
+            }
+            
+        }
+        return new ArrayList<Packet>();
+    }
+
+    /**
+     * @return the newCartregesRemainingPendingInsertion
+     */
+    public int getNewCartregesRemainingPendingInsertion() {
+        //return newCartregesRemainingPendingInsertion;
+        return -1;
+    }
+
+    /**
+     * @param newCartregesRemainingPendingInsertion the newCartregesRemainingPendingInsertion to set
+     */
+    public void setNewCartregesRemainingPendingInsertion(int newCartregesRemainingPendingInsertion) {
+        //this.newCartregesRemainingPendingInsertion = newCartregesRemainingPendingInsertion;
+    }
+
+    /**
+     * @return the weaponIndexForPendingCartreges
+     */
+    public int getWeaponIndexForPendingCartreges() {
+        //return weaponIndexForPendingCartreges;
+        return -1;
+    }
+
+    /**
+     * @param weaponIndexForPendingCartreges the weaponIndexForPendingCartreges to set
+     */
+    public void setWeaponIndexForPendingCartreges(int weaponIndexForPendingCartreges) {
+       // this.weaponIndexForPendingCartreges = weaponIndexForPendingCartreges;
+    }
+
+    /**
+     * @return the weaponsData
+     */
+    public List<WeaponInfo> getWeaponsData() {
+        for (int i = 0; i < weaponsData.size(); i++) {
+        }
+        
+        return weaponsData;
+    }
+
+    /**
+     * @param weaponsData the weaponsData to set
+     */
+    public void setWeaponsData(List<WeaponInfo> weaponsData) {
+        this.weaponsData = weaponsData;
+    }
+    
+    
 }

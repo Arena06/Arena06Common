@@ -4,6 +4,7 @@ import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.data.map.generators.MapGenerator;
 import com.assemblr.arena06.common.packet.Packet;
 import com.assemblr.arena06.common.utils.Dimension2D;
+import com.assemblr.arena06.common.utils.SerializationUtils;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -31,14 +32,22 @@ public abstract class Sprite implements Renderable {
                     if (!f.isAccessible())
                         f.setAccessible(true);
                     if (f.isAnnotationPresent(Serialize.class)) {
-                        f.set(this, entry.getValue());
+                        if (!f.getType().isPrimitive()) {
+                            f.set(this, SerializationUtils.unserialize(((Map<String, Object>)entry.getValue())));
+                        } else {
+                            f.set(this, entry.getValue());
+                        }
                     }
                 } catch (NoSuchFieldException ex) {
+                    ex.printStackTrace();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         } while (Sprite.class.isAssignableFrom(clazz = clazz.getSuperclass()));
+        if (this instanceof Player) {
+            System.out.println(((Player)this).getWeaponsData().get(0));
+        }
     }
     
     public Map<String, Object> serializeState() {
@@ -52,7 +61,12 @@ public abstract class Sprite implements Renderable {
                         f.setAccessible(true);
                 if (f.isAnnotationPresent(Serialize.class)) {
                     try {
-                        classState.put(f.getName(), f.get(this));
+                        if (!f.getType().isPrimitive()) {
+                            classState.put(f.getName(), SerializationUtils.serialize(f.get(this)));
+                        } else {
+                            classState.put(f.getName(), f.get(this));
+                        }
+                        
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -61,7 +75,7 @@ public abstract class Sprite implements Renderable {
         } while (Sprite.class.isAssignableFrom(clazz = clazz.getSuperclass()));
         return state;
     }
-    
+
     public double getX() {
         return x;
     }

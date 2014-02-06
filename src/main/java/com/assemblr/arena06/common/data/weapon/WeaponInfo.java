@@ -3,13 +3,18 @@ package com.assemblr.arena06.common.data.weapon;
 public class WeaponInfo {
     
     private int cartregesReamaining = 5;
-    private final Weapon weapon;
+    private Weapon weapon;
     private int loadedBullets;
     private double reloadRemaining;
     private boolean reloading = false;
     private double cooldownRemaining;
     private boolean outOfAmo = false;
-    
+    /*
+    Do not use, serialization system only!!!
+    */
+    public WeaponInfo() {
+        weapon = Weapon.AK_47;
+    }
     public WeaponInfo(Weapon w) {
         weapon = w;
         loadedBullets = weapon.getMagSize();
@@ -100,6 +105,9 @@ public class WeaponInfo {
      */
     public void setCartregesReamaining(int cartregesReamaining) {
         this.cartregesReamaining = cartregesReamaining;
+        if (isOutOfAmo() && cartregesReamaining > 0) {
+            setOutOfAmo(false);
+        }
     }
 
     /**

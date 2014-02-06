@@ -14,7 +14,14 @@ public class Packet01JSON extends Packet {
     
     public static Packet01JSON decode(byte[] data) throws IOException {
         ByteArrayInputStream stream = new ByteArrayInputStream(data);
-        return new Packet01JSON(mapper.readValue(stream, Map.class));
+        try {
+            stream.reset();
+            return new Packet01JSON(mapper.readValue(stream, Map.class));
+        } catch (Exception e) {
+            System.out.println("odd, unknown error");
+            e.printStackTrace();
+        }
+        return null;
     }
     
     private final Map<String, Object> data;
@@ -32,6 +39,7 @@ public class Packet01JSON extends Packet {
     public byte[] encode() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         mapper.writeValue(stream, data);
+        //System.out.println("Packet 35: " + stream.toString());
         return stream.toByteArray();
     }
     

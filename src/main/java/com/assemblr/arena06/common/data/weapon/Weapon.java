@@ -108,4 +108,13 @@ public enum Weapon {
     public String getName() {
         return name;
     }
+    
+    public int getIndex() {
+        for (int i = 0; i < Weapon.values().length; i++) {
+            if (Weapon.values()[i].equals(this)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
