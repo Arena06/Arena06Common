@@ -127,4 +127,12 @@ public class WeaponInfo {
     public void resetAmoAmount() {
         this.cartregesReamaining = 5;
     }
+
+    @Override
+    public String toString() {
+        return "{WeaponInfo: weapon: " + weapon.getName() + " with " + cartregesReamaining + " cartreges reamaining}";
+                
+    }
+    
+    
 }

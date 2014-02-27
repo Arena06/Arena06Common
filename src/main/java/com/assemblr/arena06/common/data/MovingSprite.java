@@ -5,7 +5,9 @@ import com.assemblr.arena06.common.utils.Vector2D;
 
 public abstract class MovingSprite extends UpdateableSprite {
     
+    private boolean xVelocityDirty = true;
     @Serialize private double xVelocity;
+    private boolean yVelocityDirty = true;
     @Serialize private double yVelocity;
 
     /**
@@ -19,8 +21,10 @@ public abstract class MovingSprite extends UpdateableSprite {
      * @param velocity the velocity to set
      */
     public void setVelocity(Vector2D velocity) {
+        xVelocityDirty = true;
         this.xVelocity = velocity.x;
-         this.yVelocity = velocity.y;
+        yVelocityDirty = true;
+        this.yVelocity = velocity.y;
     }
     
     public void update(double delta) {

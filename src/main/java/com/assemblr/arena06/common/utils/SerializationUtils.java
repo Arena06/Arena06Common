@@ -29,6 +29,10 @@ public class SerializationUtils {
             return serializeString((String) o);
         }
         
+        if (o.getClass().isEnum()) {
+            return serializeEnum(o);
+        }
+        
         // handle lists, arrays, maps
         if (o instanceof List) {
             return serializeList((List) o);
@@ -98,7 +102,13 @@ public class SerializationUtils {
         data.put("data", customData);
         return data;
     }
-    
+    public static Map<String, Object> serializeEnum(Object enumIn) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("T", "L");
+        data.put("class", enumIn.getClass().getName());
+        data.put("data", ((Enum)enumIn).ordinal());
+        return data;
+    }
     private static Map<String, Object> serializePrimitive(Object primitive) {
         Map<String, Object> data = new HashMap<String, Object>();
         if (primitive instanceof Integer)
@@ -218,6 +228,10 @@ public class SerializationUtils {
             return data.get("data");
         }
         
+        if (clazz.isEnum()) {
+            return clazz.getEnumConstants()[(Integer) data.get("data")];
+        }
+        
         Method unserializer = null;
         try {
             unserializer = clazz.getDeclaredMethod("unserialize", new Class[] { Map.class });
@@ -239,7 +253,6 @@ public class SerializationUtils {
             throw new RuntimeException(ex);
         }
         if (o instanceof List) {
-            System.out.println("list");
             ArrayList<Map<String, Object>> listDataMaps = (ArrayList<Map<String, Object>>) data.get("data");
             List list = ((List)o);
             for (Map<String, Object> map : listDataMaps) {

@@ -19,13 +19,16 @@ public class Player extends MovingSprite {
     
     private final boolean self;
     private boolean clientIsCurrent = true;
+    private boolean weaponsDataDirty = true;
     @Serialize private List<WeaponInfo> weaponsData;
-    private int weaponIndex;
+    private boolean weaponIndexDirty = true;
+    @Serialize private int weaponIndex;
+    private boolean lifeDirty = true;
     @Serialize private double life = 1;
+    private boolean aliveDirty = true;
     @Serialize private boolean alive = false;
+    private boolean nameDirty = true;
     @Serialize private String name;
-    //@Serialize private int newCartregesRemainingPendingInsertion = -1;
-    //@Serialize private int weaponIndexForPendingCartreges = -1;
     
     public Player() {
         this(false, "Player");
@@ -71,6 +74,7 @@ public class Player extends MovingSprite {
     }
     
     public void setName(String name) {
+        nameDirty = true;
         this.name = name;
     }
 
@@ -79,10 +83,12 @@ public class Player extends MovingSprite {
     }
 
     public void kill() {
-        this.alive = false;
+        setAlive(false);
     }
     
     public void setAlive(boolean alive) {
+        aliveDirty = true;
+        lifeDirty = true;
         if (this.alive == false && alive) {
             this.setLife(1);
             for (WeaponInfo wi : getWeaponsData()) {
@@ -110,6 +116,7 @@ public class Player extends MovingSprite {
      * @return the life
      */
     public double getLife() {
+        
         return life;
     }
 
@@ -117,6 +124,7 @@ public class Player extends MovingSprite {
      * @param life the life to set
      */
     public void setLife(double life) {
+        lifeDirty = true;
         this.life = life;
     }
 
@@ -128,6 +136,7 @@ public class Player extends MovingSprite {
     }
 
     public void incrementWeaponIndex(int amount) {
+        weaponIndexDirty = true;
         weaponIndex += amount;
         weaponIndex += getWeaponsData().size() * 3;
         weaponIndex = weaponIndex % getWeaponsData().size();
@@ -136,6 +145,7 @@ public class Player extends MovingSprite {
      * @param weapon the weapon to set
      */
     public void setWeapon(Weapon weapon) {
+        weaponIndexDirty = true;
         for (int i = 0; i < getWeaponsData().size(); i++) {
             if (getWeaponsData().get(i).getWeapon().equals(weapon)) {
                 weaponIndex = i;
@@ -155,6 +165,7 @@ public class Player extends MovingSprite {
      * @param loadedBullets the loadedBullets to set
      */
     public void setLoadedBullets(int loadedBullets) {
+        weaponsDataDirty = true;
         this.getWeaponsData().get(weaponIndex).setLoadedBullets(loadedBullets);
     }
 
@@ -169,6 +180,7 @@ public class Player extends MovingSprite {
      * @param timeCoolingDown the timeCoolingDown to set
      */
     public void setCooldownRemaining(double timeCoolingDown) {
+        weaponsDataDirty = true;
         this.getWeaponsData().get(weaponIndex).setCooldownRemaining(timeCoolingDown);
     }
 
@@ -183,6 +195,7 @@ public class Player extends MovingSprite {
      * @param timeRreloading the timeRreloading to set
      */
     public void setReloadRemaining(double timeRreloading) {
+        weaponsDataDirty = true;
         this.getWeaponsData().get(weaponIndex).setReloadRemaining(timeRreloading);
     }
 
@@ -197,21 +210,27 @@ public class Player extends MovingSprite {
      * @param isReloading the isReloading to set
      */
     public void setIsReloading(boolean isReloading) {
+        weaponsDataDirty = true;
         this.getWeaponsData().get(weaponIndex).setReloading(isReloading);
     }
     
     public void fillMagazine() {
+        weaponsDataDirty = true;
         this.getWeaponsData().get(weaponIndex).setLoadedBullets(getWeaponsData().get(weaponIndex).getWeapon().getMagSize());
     }
     public WeaponInfo getWeaponData() {
+        weaponsDataDirty = true;
+        //System.out.println(weaponIndex);
         WeaponInfo value = getWeaponsData().get(weaponIndex);
         return value;
     }
     public WeaponInfo getWeaponData(int weaponIndex) {
+        weaponsDataDirty = true;
         WeaponInfo value = getWeaponsData().get(weaponIndex);
         return value;
     }
     public WeaponInfo getWeaponData(Weapon weapon) {
+        weaponsDataDirty = true;
         for (WeaponInfo wi : getWeaponsData()) {
             if (wi.getWeapon() == weapon)
                 return wi;
@@ -221,16 +240,18 @@ public class Player extends MovingSprite {
 
     @Override
     public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> dirtySprites, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
+        
         if (interactor instanceof AmoPickup && isAlive()) {
+            weaponsDataDirty = true;
             WeaponInfo wi = getWeaponData(((AmoPickup)interactor).getWeapon());//Update Localy
             wi.setCartregesReamaining(wi.getCartregesReamaining() + ((AmoPickup)interactor).getAmount());
             spritesPendingRemoveal.add(interactorID);
             
             //Use primatives to tell client to update
-            setNewCartregesRemainingPendingInsertion(wi.getCartregesReamaining() + ((AmoPickup)interactor).getAmount());
+            //setNewCartregesRemainingPendingInsertion(wi.getCartregesReamaining() + ((AmoPickup)interactor).getAmount());
             for (int i = 0; i < getWeaponsData().size(); i++) {
                 if (getWeaponsData().get(i).getWeapon().equals(wi.getWeapon())) {
-                    setWeaponIndexForPendingCartreges(i);
+                    //setWeaponIndexForPendingCartreges(i);
                     break;
                 }
             }
@@ -239,42 +260,15 @@ public class Player extends MovingSprite {
         return new ArrayList<Packet>();
     }
 
-    /**
-     * @return the newCartregesRemainingPendingInsertion
-     */
-    public int getNewCartregesRemainingPendingInsertion() {
-        //return newCartregesRemainingPendingInsertion;
-        return -1;
-    }
+    
 
-    /**
-     * @param newCartregesRemainingPendingInsertion the newCartregesRemainingPendingInsertion to set
-     */
-    public void setNewCartregesRemainingPendingInsertion(int newCartregesRemainingPendingInsertion) {
-        //this.newCartregesRemainingPendingInsertion = newCartregesRemainingPendingInsertion;
-    }
+    
 
-    /**
-     * @return the weaponIndexForPendingCartreges
-     */
-    public int getWeaponIndexForPendingCartreges() {
-        //return weaponIndexForPendingCartreges;
-        return -1;
-    }
-
-    /**
-     * @param weaponIndexForPendingCartreges the weaponIndexForPendingCartreges to set
-     */
-    public void setWeaponIndexForPendingCartreges(int weaponIndexForPendingCartreges) {
-       // this.weaponIndexForPendingCartreges = weaponIndexForPendingCartreges;
-    }
 
     /**
      * @return the weaponsData
      */
     public List<WeaponInfo> getWeaponsData() {
-        for (int i = 0; i < weaponsData.size(); i++) {
-        }
         
         return weaponsData;
     }
