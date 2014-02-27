@@ -107,6 +107,7 @@ public class SerializationUtils {
         data.put("T", "L");
         data.put("class", enumIn.getClass().getName());
         data.put("data", ((Enum)enumIn).ordinal());
+        System.out.println("enum " + enumIn.toString() + " was serialized.");
         return data;
     }
     private static Map<String, Object> serializePrimitive(Object primitive) {
@@ -224,11 +225,15 @@ public class SerializationUtils {
         if (clazz.equals(String.class)) {
             return data.get("data");
         }
-        if (clazz.equals(List.class)) {
+        /*if (clazz.equals(List.class)) {
+            
             return data.get("data");
-        }
+            
+        }*/
         
         if (clazz.isEnum()) {
+            
+            System.out.println("unserialize unum from class: " + clazz.toString());
             return clazz.getEnumConstants()[(Integer) data.get("data")];
         }
         
@@ -253,6 +258,7 @@ public class SerializationUtils {
             throw new RuntimeException(ex);
         }
         if (o instanceof List) {
+            
             ArrayList<Map<String, Object>> listDataMaps = (ArrayList<Map<String, Object>>) data.get("data");
             List list = ((List)o);
             for (Map<String, Object> map : listDataMaps) {

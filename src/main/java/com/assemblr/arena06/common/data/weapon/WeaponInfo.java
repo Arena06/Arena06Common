@@ -1,14 +1,16 @@
 package com.assemblr.arena06.common.data.weapon;
 
+import com.assemblr.arena06.common.utils.Serialize;
+
 public class WeaponInfo {
     
-    private int cartregesReamaining = 5;
-    private Weapon weapon;
-    private int loadedBullets;
-    private double reloadRemaining;
-    private boolean reloading = false;
-    private double cooldownRemaining;
-    private boolean outOfAmo = false;
+    @Serialize private int cartregesReamaining = 5;
+    @Serialize private Weapon weapon;
+    @Serialize private int loadedBullets;
+    @Serialize private double reloadRemaining;
+    @Serialize private boolean reloading = false;
+    @Serialize private double cooldownRemaining;
+    @Serialize private boolean outOfAmo = false;
     /*
     Do not use, serialization system only!!!
     */
