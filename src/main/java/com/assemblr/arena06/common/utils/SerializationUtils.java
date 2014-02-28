@@ -1,12 +1,10 @@
 package com.assemblr.arena06.common.utils;
 
 import com.assemblr.arena06.common.utils.Serialize;
-import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,14 +100,15 @@ public class SerializationUtils {
         data.put("data", customData);
         return data;
     }
-    public static Map<String, Object> serializeEnum(Object enumIn) {
+    
+    private static Map<String, Object> serializeEnum(Object enumIn) {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("T", "L");
         data.put("class", enumIn.getClass().getName());
         data.put("data", ((Enum)enumIn).ordinal());
-        System.out.println("enum " + enumIn.toString() + " was serialized.");
         return data;
     }
+    
     private static Map<String, Object> serializePrimitive(Object primitive) {
         Map<String, Object> data = new HashMap<String, Object>();
         if (primitive instanceof Integer)
@@ -232,8 +231,6 @@ public class SerializationUtils {
         }*/
         
         if (clazz.isEnum()) {
-            
-            System.out.println("unserialize unum from class: " + clazz.toString());
             return clazz.getEnumConstants()[(Integer) data.get("data")];
         }
         
