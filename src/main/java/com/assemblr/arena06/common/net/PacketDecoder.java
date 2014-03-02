@@ -6,42 +6,34 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.List;
 
 
 public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
-
-    int bytesRemainingInPacket = 0;
-    byte firstLengthIndicator = 0;
-    ByteBuf packet;
+    
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf buf, List<Object> out) throws Exception {
-	for (byte bi = buf.readByte(); buf.isReadable(); bi = buf.readByte()) {
-	    if (bytesRemainingInPacket == 0) {
-		firstLengthIndicator = bi;
-		bytesRemainingInPacket = -1;
-	    } else if (bytesRemainingInPacket == -1) {
-		bytesRemainingInPacket =  ((firstLengthIndicator << 8) + bi);
-		firstLengthIndicator = 0;
-		packet = chc.alloc().buffer(bytesRemainingInPacket);
-	    } else if (bytesRemainingInPacket > 0) {
-		packet.writeByte(bi);
-		bytesRemainingInPacket--;
-		if (bytesRemainingInPacket == 0) {
-		    decodeFullPacket(chc, packet, out);
-		    packet.release();
-		}
-	    }
-	}
+        if (buf.readableBytes() < 2)
+            return;
+        int size = buf.getUnsignedShort(buf.readerIndex());
+        if (buf.readableBytes() < size)
+            return;
+        buf.readUnsignedShort();
+        
+        byte id = buf.readByte();
+        byte[] data = new byte[size - 1];
+        buf.readBytes(data);
+        decodeFullPacket(chc, id, data, out);
     }
     
+    private String byteBufToString(ByteBuf buf) {
+        byte[] data = new byte[buf.readableBytes()];
+        buf.getBytes(buf.readerIndex(), data);
+        return Arrays.toString(data);
+    }
     
-    
-    protected void decodeFullPacket(ChannelHandlerContext ctx, ByteBuf packet, List<Object> out) throws Exception {
-        byte id = packet.readByte();
-        byte[] data = new byte[packet.readableBytes()];
-        packet.readBytes(data);
-        
+    protected void decodeFullPacket(ChannelHandlerContext ctx, byte id, byte[] data, List<Object> out) throws Exception {
         Class<? extends Packet> clazz = Packet.packetIdMap.get(id);
         if (clazz == null) {
             throw new RuntimeException("Encountered illegal packet type: " + id);
