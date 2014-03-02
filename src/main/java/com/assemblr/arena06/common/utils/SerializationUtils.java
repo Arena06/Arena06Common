@@ -1,6 +1,5 @@
 package com.assemblr.arena06.common.utils;
 
-import com.assemblr.arena06.common.utils.Serialize;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -146,14 +145,14 @@ public class SerializationUtils {
         data.put("T", "L");
         data.put("class", list.getClass().getName());
         List<Object> objList = new ArrayList<Object>(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            objList.add(serialize(list.get(i)));
+        for (Object o : list) {
+            objList.add(serialize(o));
         }
         data.put("data", objList);
         return data;
     }
     
-    private static Map<String, Object> serializeArray(Class<?> type, Object[] arr) {
+    private static <T> Map<String, Object> serializeArray(Class<?> type, T[] arr) {
         Map<String, Object> data = new HashMap<String, Object>();
         data.put("T", type.getComponentType().isPrimitive() ? type.getName() : ("[L"));
         data.put("class", arr.getClass().getComponentType().getName());
@@ -187,6 +186,9 @@ public class SerializationUtils {
     
     
     public static Object unserialize(Map<String, Object> data) {
+        if (data == null)
+            return null;
+        
         // handle primitives
         char type = ((String) data.get("T")).charAt(0);
         switch (type) {
@@ -255,14 +257,23 @@ public class SerializationUtils {
             throw new RuntimeException(ex);
         }
         if (o instanceof List) {
-            
             ArrayList<Map<String, Object>> listDataMaps = (ArrayList<Map<String, Object>>) data.get("data");
-            List list = ((List)o);
+            List list = ((List) o);
+            
             for (Map<String, Object> map : listDataMaps) {
                 list.add(unserialize(map));
             }
             
             return list;
+        } else if (o instanceof Map) {
+            List<List<Map<String, Object>>> mappings = (List<List<Map<String, Object>>>) data.get("data");
+            Map<Object, Object> map = ((Map<Object, Object>) o);
+            
+            for (List<Map<String, Object>> mapping : mappings) {
+                map.put(unserialize(mapping.get(0)), unserialize(mapping.get(1)));
+            }
+            
+            return map;
         } else {
             Map<String, Map<String, Object>> classData = (Map<String, Map<String, Object>>) data.get("data");
             for (Map.Entry<String, Map<String, Object>> entry : classData.entrySet()) {
@@ -335,20 +346,22 @@ public class SerializationUtils {
             throw new RuntimeException("invalid array serialization type '" + type + "'");
         }
         
-        List<Object> content = (List<Object>) data.get("data");
+        List<Map<String, Object>> content = (List<Map<String, Object>>) data.get("data");
         for (int i = 0; i < content.size(); i++) {
-            Array.set(array, i, content.get(i));
+            Array.set(array, i, unserialize(content.get(i)));
         }
         
         return array;
     }
     
-    private static Object[] toObjectArray(Object array) {
+    private static <T> T[] toObjectArray(Object array) {
+        if (!array.getClass().getComponentType().isPrimitive())
+            return (T[]) array;
         int length = Array.getLength(array);
         Object[] ret = new Object[length];
         for(int i = 0; i < length; i++)
             ret[i] = Array.get(array, i);
-        return ret;
+        return (T[]) ret;
     }
     
 }
