@@ -8,30 +8,16 @@ import io.netty.handler.codec.MessageToMessageEncoder;
 import java.util.List;
 
 public class PacketEncoder extends MessageToMessageEncoder<AddressedPacket> {
-
+    
     @Override
     protected void encode(ChannelHandlerContext ctx, AddressedPacket msg, List<Object> out) throws Exception {
         byte[] data = msg.getPacket().encode();
-        ByteBuf buf = Unpooled.buffer(data.length + 3);
-        // write the packet length 
-        buf.writeBytes(encodeIntToBytes(data.length + 1));
+        ByteBuf buf = Unpooled.buffer(data.length + 1);
         // write the packet ID
         buf.writeByte(Packet.packetIdMap.inverse().get(msg.getPacket().getClass()));
         // write the data
         buf.writeBytes(data);
         out.add(buf);
     }
-
-    public void writeAllBytes(byte[] msg) {
-        for (byte b : msg) {
-            System.out.println(b);
-        }
-        System.out.println();
-    }
-
-    private byte[] encodeIntToBytes(int i) {
-        byte b1 = (byte) i;
-        byte b2 = (byte) (i >> 8);
-        return new byte[] { b2, b1 };
-    }
+    
 }
