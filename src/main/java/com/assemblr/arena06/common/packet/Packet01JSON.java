@@ -39,8 +39,12 @@ public class Packet01JSON extends Packet {
     public byte[] encode() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         mapper.writeValue(stream, data);
-        //System.out.println("Packet 35: " + stream.toString());
         return stream.toByteArray();
+    }
+    
+    @Override
+    public String toString() {
+        return "Packet01JSON(" + data + ")";
     }
     
 }
