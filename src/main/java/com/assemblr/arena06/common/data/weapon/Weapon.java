@@ -55,7 +55,6 @@ public enum Weapon {
     });
     
     public static Weapon getRandomWeapon() {
-        System.out.println("random weapon");
         return Weapon.values()[(int)(Math.random()*Weapon.values().length)];
     }
     

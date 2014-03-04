@@ -9,6 +9,7 @@ package com.assemblr.arena06.common.data;
 import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.data.weapon.Weapon;
 import com.assemblr.arena06.common.packet.Packet;
+import com.assemblr.arena06.common.utils.Fonts;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -43,6 +44,7 @@ public class AmmoPickup extends Sprite {
     public void render(Graphics2D g) {
         g.setColor(Color.red);
         g.drawRect(0, 0, (int) getWidth(), (int) getHeight());
+        g.setFont(Fonts.FONT_PRIMARY);
         g.drawString(getWeapon().getName(), 0, 0);
     }
 
