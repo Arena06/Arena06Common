@@ -15,7 +15,7 @@ import java.awt.Graphics2D;
  *
  * @author Henry
  */
-public class AmoPickup extends Sprite {
+public class AmmoPickup extends Sprite {
     @Serialize private int weaponIndex = 0;
     private int amount = 5;
     public Weapon getWeapon() {
