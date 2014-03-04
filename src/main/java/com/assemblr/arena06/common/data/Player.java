@@ -241,14 +241,14 @@ public class Player extends MovingSprite {
     @Override
     public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> dirtySprites, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
         
-        if (interactor instanceof AmoPickup && isAlive()) {
+        if (interactor instanceof AmmoPickup && isAlive()) {
             weaponsDataDirty = true;
-            WeaponInfo wi = getWeaponData(((AmoPickup)interactor).getWeapon());//Update Localy
-            wi.setCartregesReamaining(wi.getCartregesReamaining() + ((AmoPickup)interactor).getAmount());
+            WeaponInfo wi = getWeaponData(((AmmoPickup)interactor).getWeapon());//Update Localy
+            wi.setCartregesReamaining(wi.getCartregesReamaining() + ((AmmoPickup)interactor).getAmount());
             spritesPendingRemoveal.add(interactorID);
             
             //Use primatives to tell client to update
-            //setNewCartregesRemainingPendingInsertion(wi.getCartregesReamaining() + ((AmoPickup)interactor).getAmount());
+            //setNewCartregesRemainingPendingInsertion(wi.getCartregesReamaining() + ((AmmoPickup)interactor).getAmount());
             for (int i = 0; i < getWeaponsData().size(); i++) {
                 if (getWeaponsData().get(i).getWeapon().equals(wi.getWeapon())) {
                     //setWeaponIndexForPendingCartreges(i);
