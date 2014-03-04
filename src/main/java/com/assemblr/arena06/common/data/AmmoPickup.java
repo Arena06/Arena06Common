@@ -6,10 +6,14 @@
 
 package com.assemblr.arena06.common.data;
 
+import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.data.weapon.Weapon;
+import com.assemblr.arena06.common.packet.Packet;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -17,18 +21,28 @@ import java.awt.Graphics2D;
  */
 public class AmmoPickup extends Sprite {
     @Serialize private int weaponIndex = 0;
-    private int amount = 5;
+    @Serialize private int amount = 5;
     public Weapon getWeapon() {
         return Weapon.values()[weaponIndex];
     }
+    public AmmoPickup() {
+        this.setWidth(20);
+        this.setHeight(20);
+    }
     
+    public AmmoPickup(Weapon weapon, int amount) {
+        this.setWidth(20);
+        this.setHeight(20);
+        this.amount = amount;
+        setWeapon(weapon);
+    }
     public void setWeapon(Weapon w) {
         weaponIndex = w.getIndex();
     }
 
     public void render(Graphics2D g) {
         g.setColor(Color.red);
-        g.fillRect(0, 0, 20, 20);
+        g.drawRect(0, 0, (int) getWidth(), (int) getHeight());
         g.drawString(getWeapon().getName(), 0, 0);
     }
 
@@ -45,4 +59,21 @@ public class AmmoPickup extends Sprite {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+    @Override
+    public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> dirtySprites, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
+        System.out.println("amo pickup contact");
+        return new ArrayList<Packet>();
+    }
+    
+    
+    
+
+    @Override
+    public String toString() {
+        return "[Ammo Pickup for " + getWeapon().getName() + " with " + amount + " cartreges at position " + getPosition() + "]";
+    }
+    
+    
+    
 }

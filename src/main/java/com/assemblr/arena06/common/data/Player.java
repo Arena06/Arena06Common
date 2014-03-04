@@ -42,6 +42,7 @@ public class Player extends MovingSprite {
         for (Weapon w : Weapon.values()) {
             weaponsData.add(new WeaponInfo(w));
         }
+        setStartingAmmo();
     }
     
     public Color getColor() {
@@ -214,10 +215,14 @@ public class Player extends MovingSprite {
         this.getWeaponsData().get(weaponIndex).setReloading(isReloading);
     }
     
-    public void fillMagazine() {
+    public void setStartingAmmo() {
         weaponsDataDirty = true;
-        this.getWeaponsData().get(weaponIndex).setLoadedBullets(getWeaponsData().get(weaponIndex).getWeapon().getMagSize());
+        for (WeaponInfo weaponInfo : weaponsData) {
+            weaponInfo.setDefaults();
+        }
+        getWeaponData(Weapon.BERETTA_93R).setCartregesReamaining(5);
     }
+    
     public WeaponInfo getWeaponData() {
         weaponsDataDirty = true;
         //System.out.println(weaponIndex);
@@ -240,13 +245,12 @@ public class Player extends MovingSprite {
 
     @Override
     public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> dirtySprites, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
-        
         if (interactor instanceof AmmoPickup && isAlive()) {
             weaponsDataDirty = true;
             WeaponInfo wi = getWeaponData(((AmmoPickup)interactor).getWeapon());//Update Localy
             wi.setCartregesReamaining(wi.getCartregesReamaining() + ((AmmoPickup)interactor).getAmount());
             spritesPendingRemoveal.add(interactorID);
-            
+            dirtySprites.add(selfID);
             //Use primatives to tell client to update
             //setNewCartregesRemainingPendingInsertion(wi.getCartregesReamaining() + ((AmmoPickup)interactor).getAmount());
             for (int i = 0; i < getWeaponsData().size(); i++) {
@@ -279,6 +283,10 @@ public class Player extends MovingSprite {
     public void setWeaponsData(List<WeaponInfo> weaponsData) {
         this.weaponsData = weaponsData;
     }
-    
+
+    @Override
+    public String toString() {
+        return "[Player at " + getPosition().toString() + " with name " +getName() +"]";
+    }
     
 }
