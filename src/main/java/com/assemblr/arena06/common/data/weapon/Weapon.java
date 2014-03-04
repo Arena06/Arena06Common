@@ -53,6 +53,12 @@ public enum Weapon {
             return bullets;
         }
     });
+    
+    public static Weapon getRandomWeapon() {
+        System.out.println("random weapon");
+        return Weapon.values()[(int)(Math.random()*Weapon.values().length)];
+    }
+    
     private String name;
     private double reloadTime, fireTime;
     private int magSize;

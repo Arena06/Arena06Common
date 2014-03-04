@@ -4,24 +4,34 @@ import com.assemblr.arena06.common.utils.Serialize;
 
 public class WeaponInfo {
     
-    @Serialize private int cartregesReamaining = 5;
+    @Serialize private int cartregesReamaining = 0;
     @Serialize private Weapon weapon;
     @Serialize private int loadedBullets;
     @Serialize private double reloadRemaining;
     @Serialize private boolean reloading = false;
     @Serialize private double cooldownRemaining;
-    @Serialize private boolean outOfAmo = false;
+    @Serialize private boolean outOfAmo = true;
     /*
     Do not use, serialization system only!!!
     */
     public WeaponInfo() {
         weapon = Weapon.AK_47;
+        setDefaults();
     }
     public WeaponInfo(Weapon w) {
         weapon = w;
-        loadedBullets = weapon.getMagSize();
+        setDefaults();
     }
 
+    
+    public void setDefaults() {
+        cartregesReamaining = 0;
+        loadedBullets = 0;
+        outOfAmo = true;
+        reloading = false;
+        reloadRemaining = 0;
+        cooldownRemaining = 0;
+    }
     /**
      * @return the weapon
      */
@@ -109,6 +119,7 @@ public class WeaponInfo {
         this.cartregesReamaining = cartregesReamaining;
         if (isOutOfAmo() && cartregesReamaining > 0) {
             setOutOfAmo(false);
+            reload();
         }
     }
 
