@@ -44,8 +44,8 @@ public class AmmoPickup extends Sprite {
     public void render(Graphics2D g) {
         g.setColor(Color.red);
         g.drawRect(0, 0, (int) getWidth(), (int) getHeight());
-        g.setFont(Fonts.FONT_PRIMARY);
-        g.drawString(getWeapon().getName(), 0, 0);
+        g.setFont(Fonts.FONT_PRIMARY.deriveFont(12F));
+        g.drawString(getWeapon().getName(), 0, 10);
     }
 
     /**
