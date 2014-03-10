@@ -16,9 +16,9 @@ import java.util.Map;
 
 public abstract class Sprite implements Renderable {
     private boolean xDirty = true;
-    @Serialize protected double x;
+    @Serialize private double x;
     private boolean yDirty = true;
-    @Serialize protected double y;
+    @Serialize private double y;
     private boolean widthDirty = true;
     @Serialize protected double width;
     private boolean heightDirty = true;
@@ -130,7 +130,7 @@ public abstract class Sprite implements Renderable {
     
     public void setTileX(int x) {
         xDirty = true;
-        this.x = x * MapGenerator.TILE_SIZE;
+        this.setX(x * MapGenerator.TILE_SIZE);
     }
     
     public int getTileY() {
@@ -143,7 +143,7 @@ public abstract class Sprite implements Renderable {
     
     public void setTileY(int y) {
         yDirty = true;
-        this.y = y * MapGenerator.TILE_SIZE;
+        this.setY(y * MapGenerator.TILE_SIZE);
     }
     
     public double getWidth() {
@@ -170,8 +170,8 @@ public abstract class Sprite implements Renderable {
     public void setPosition(Point2D position) {
         xDirty = true;
         yDirty = true;
-        x = position.getX();
-        y = position.getY();
+        setX(position.getX());
+        setY(position.getY());
     }
     
     public Point2D.Double getCenter() {
@@ -181,8 +181,8 @@ public abstract class Sprite implements Renderable {
     public void setCenter(Point2D position) {
         xDirty = true;
         yDirty = true;
-        x = position.getX() - width/2.0;
-        y = position.getY() - height/2.0;
+        setX(position.getX() - width/2.0);
+        setY(position.getY() - height/2.0);
     }
     
     public Dimension2D.Double getSize() {
@@ -205,8 +205,8 @@ public abstract class Sprite implements Renderable {
         yDirty = true;
         heightDirty = true;
         widthDirty = true;
-        x = bounds.getX();
-        y = bounds.getY();
+        setX(bounds.getX());
+        setY(bounds.getY());
         width = bounds.getWidth();
         height = bounds.getHeight();
     }

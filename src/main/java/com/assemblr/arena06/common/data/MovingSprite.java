@@ -28,8 +28,8 @@ public abstract class MovingSprite extends UpdateableSprite {
     }
     
     public void update(double delta) {
-        this.x += delta * xVelocity;
-        this.y += delta * yVelocity;
+        this.setX(this.getX() + delta * xVelocity);
+        this.setY(this.getY() + delta * yVelocity);
     }
     
 }
