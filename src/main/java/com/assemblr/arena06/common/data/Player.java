@@ -5,12 +5,14 @@ import com.assemblr.arena06.common.data.map.generators.MapGenerator;
 import com.assemblr.arena06.common.data.weapon.Weapon;
 import com.assemblr.arena06.common.data.weapon.WeaponInfo;
 import com.assemblr.arena06.common.packet.Packet;
+import com.assemblr.arena06.common.resource.ResourceResolver;
 import com.assemblr.arena06.common.utils.Fonts;
 import com.assemblr.arena06.common.utils.Serialize;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +55,8 @@ public class Player extends MovingSprite {
         if (!alive) {
             return;
         }
-        g.setColor(getColor());
-        g.fill(new Rectangle2D.Double(0, 0, width, height));
-        
+        Image sprite = ResourceResolver.getResourceResolver().resolveResource("/player.png");
+        g.drawImage(sprite, (int) (getWidth() / 2 - sprite.getWidth(null) / 2), (int) (getHeight()/ 2 - sprite.getHeight(null)/ 2), null);
         if (!self) {
             Font f = Fonts.FONT_PRIMARY.deriveFont(8f);
             FontMetrics metrics = g.getFontMetrics(f);
