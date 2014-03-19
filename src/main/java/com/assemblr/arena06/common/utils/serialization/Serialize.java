@@ -1,4 +1,4 @@
-package com.assemblr.arena06.common.utils;
+package com.assemblr.arena06.common.utils.serialization;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

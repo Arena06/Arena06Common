@@ -1,6 +1,6 @@
 package com.assemblr.arena06.common.data;
 
-import com.assemblr.arena06.common.utils.Serialize;
+import com.assemblr.arena06.common.utils.serialization.Serialize;
 import com.assemblr.arena06.common.utils.Vector2D;
 
 public abstract class MovingSprite extends UpdateableSprite {

@@ -17,4 +17,13 @@ public final class MathUtils {
         return x;
     }
     
+    /*
+    @return: the CCW angle formed by these cordinates and the ray along the positive x axis and it assumes the y axis is inverted.
+    */
+    public static double getAngle(double x, double y) {
+        if (x > 0) {
+            return Math.atan(-y / x);
+        }
+        return 0;
+    }
 }

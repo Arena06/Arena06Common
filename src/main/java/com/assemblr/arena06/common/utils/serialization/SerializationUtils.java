@@ -1,5 +1,8 @@
-package com.assemblr.arena06.common.utils;
+package com.assemblr.arena06.common.utils.serialization;
 
+import com.assemblr.arena06.common.utils.serialization.Serialize;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -10,6 +13,17 @@ import java.util.Map;
 
 
 public class SerializationUtils {
+    
+    public static final ImmutableBiMap<String, String> CLASS_NAME_SHORTENER = ImmutableBiMap.<String, String>of(
+            "com.assemblr.arena06.common.data.Sprite", "SS",
+            "com.assemblr.arena06.common.data.UpdateableSprite", "US",
+            "com.assemblr.arena06.common.data.MovingSprite", "MS",
+            "com.assemblr.arena06.common.data.Player", "PL"
+    );
+    
+    
+    
+    
     
     public static Map<String, Object> serialize(Object o) {
         if (o == null)

@@ -10,7 +10,7 @@ import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.data.weapon.Weapon;
 import com.assemblr.arena06.common.packet.Packet;
 import com.assemblr.arena06.common.utils.Fonts;
-import com.assemblr.arena06.common.utils.Serialize;
+import com.assemblr.arena06.common.utils.serialization.Serialize;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -60,12 +60,6 @@ public class AmmoPickup extends Sprite {
      */
     public void setAmount(int amount) {
         this.amount = amount;
-    }
-
-    @Override
-    public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> dirtySprites, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
-        System.out.println("amo pickup contact");
-        return new ArrayList<Packet>();
     }
     
     

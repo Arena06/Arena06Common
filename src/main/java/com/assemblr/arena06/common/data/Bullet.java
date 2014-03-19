@@ -2,7 +2,7 @@ package com.assemblr.arena06.common.data;
 
 import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.packet.Packet;
-import com.assemblr.arena06.common.utils.Serialize;
+import com.assemblr.arena06.common.utils.serialization.Serialize;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;

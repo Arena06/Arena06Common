@@ -4,8 +4,8 @@ import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.data.map.generators.MapGenerator;
 import com.assemblr.arena06.common.packet.Packet;
 import com.assemblr.arena06.common.utils.Dimension2D;
-import com.assemblr.arena06.common.utils.SerializationUtils;
-import com.assemblr.arena06.common.utils.Serialize;
+import com.assemblr.arena06.common.utils.serialization.SerializationUtils;
+import com.assemblr.arena06.common.utils.serialization.Serialize;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Field;
@@ -27,7 +27,8 @@ public abstract class Sprite implements Renderable {
     public void updateState(Map<String, Object> state) {
         Class<?> clazz = this.getClass();
         do {
-            Map<String, Object> classState = (Map<String, Object>) state.get(clazz.getName());
+            String shortName = SerializationUtils.CLASS_NAME_SHORTENER.get(clazz.getName());
+            Map<String, Object> classState = (Map<String, Object>) state.get(shortName != null ? shortName : clazz.getName());
             if (classState == null) continue;
             for (Map.Entry<String, Object> entry : classState.entrySet()) {
                 try {
@@ -35,6 +36,7 @@ public abstract class Sprite implements Renderable {
                     if (!f.isAccessible())
                         f.setAccessible(true);
                     if (f.isAnnotationPresent(Serialize.class)) {
+                        
                         if (!f.getType().isPrimitive() || f.getType().isEnum()) {
                             f.set(this, SerializationUtils.unserialize(((Map<String, Object>)entry.getValue())));
                         } else {
@@ -53,9 +55,6 @@ public abstract class Sprite implements Renderable {
                 }
             }
         } while (Sprite.class.isAssignableFrom(clazz = clazz.getSuperclass()));
-        if (this instanceof Player) {
-            //System.out.println("Sprite line 57: " + ((Player)this).getWeaponData());
-        }
     }
     public Map<String, Object> serializeState() {
         return serializeState(false);
@@ -65,7 +64,11 @@ public abstract class Sprite implements Renderable {
         Class<?> clazz = this.getClass();
         do {
             Map<String, Object> classState = new HashMap<String, Object>();
-            state.put(clazz.getName(), classState);
+            String shortName = SerializationUtils.CLASS_NAME_SHORTENER.get(clazz.getName());
+            if (shortName == null)
+                state.put(clazz.getName(), classState);
+            else
+                state.put(shortName, classState);
             for (Field f : clazz.getDeclaredFields()) {
                 if (!f.isAccessible())
                         f.setAccessible(true);
@@ -81,8 +84,8 @@ public abstract class Sprite implements Renderable {
                                 } else {
                                     classState.put(f.getName(), f.get(this));
                                 }
-                            } else {
                                 
+                                dirtyIndicator.set(this, false);
                             }
                         } catch (Exception ex) {
                             if (!f.getType().isPrimitive() || f.getType().isEnum()) {

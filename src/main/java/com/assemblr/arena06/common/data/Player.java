@@ -7,7 +7,7 @@ import com.assemblr.arena06.common.data.weapon.WeaponInfo;
 import com.assemblr.arena06.common.packet.Packet;
 import com.assemblr.arena06.common.resource.ResourceResolver;
 import com.assemblr.arena06.common.utils.Fonts;
-import com.assemblr.arena06.common.utils.Serialize;
+import com.assemblr.arena06.common.utils.serialization.Serialize;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -221,15 +221,33 @@ public class Player extends MovingSprite {
         for (WeaponInfo weaponInfo : weaponsData) {
             weaponInfo.setDefaults();
         }
-        getWeaponData(Weapon.BERETTA_93R).setCartregesReamaining(5);
+        getWeaponDataModifyable(Weapon.BERETTA_93R).setCartregesReamaining(5);
     }
     
     public WeaponInfo getWeaponData() {
-        weaponsDataDirty = true;
-        //System.out.println(weaponIndex);
         WeaponInfo value = getWeaponsData().get(weaponIndex);
         return value;
     }
+    
+    public WeaponInfo getWeaponDataModifyable() {
+        
+        weaponsDataDirty = true;
+        WeaponInfo value = getWeaponsData().get(weaponIndex);
+        return value;
+    }
+    
+    public WeaponInfo getWeaponDataModifyable(int weaponIndex) {
+        
+        weaponsDataDirty = true;
+        return getWeaponData(weaponIndex);
+    }
+    
+    
+    public WeaponInfo getWeaponDataModifyable(Weapon weapon) {
+        weaponsDataDirty = true;
+        return getWeaponData(weapon);
+    }
+    
     public WeaponInfo getWeaponData(int weaponIndex) {
         weaponsDataDirty = true;
         WeaponInfo value = getWeaponsData().get(weaponIndex);
@@ -248,7 +266,7 @@ public class Player extends MovingSprite {
     public List<Packet> onContact(int selfID, Sprite interactor, int interactorID, List<Integer> dirtySprites, List<Integer> spritesPendingRemoveal, ChatBroadcaster chater) {
         if (interactor instanceof AmmoPickup && isAlive()) {
             weaponsDataDirty = true;
-            WeaponInfo wi = getWeaponData(((AmmoPickup)interactor).getWeapon());//Update Localy
+            WeaponInfo wi = getWeaponDataModifyable(((AmmoPickup)interactor).getWeapon());//Update Localy
             wi.setCartregesReamaining(wi.getCartregesReamaining() + ((AmmoPickup)interactor).getAmount());
             spritesPendingRemoveal.add(interactorID);
             dirtySprites.add(selfID);

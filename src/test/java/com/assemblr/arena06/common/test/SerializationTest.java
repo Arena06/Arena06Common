@@ -1,6 +1,6 @@
 package com.assemblr.arena06.common.test;
 
-import com.assemblr.arena06.common.utils.SerializationUtils;
+import com.assemblr.arena06.common.utils.serialization.SerializationUtils;
 import com.google.common.collect.ImmutableMap;
 import java.lang.reflect.Array;
 import java.util.ArrayList;

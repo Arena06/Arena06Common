@@ -1,6 +1,6 @@
 package com.assemblr.arena06.common.data.weapon;
 
-import com.assemblr.arena06.common.utils.Serialize;
+import com.assemblr.arena06.common.utils.serialization.Serialize;
 
 public class WeaponInfo {
     
