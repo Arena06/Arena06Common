@@ -13,6 +13,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ public class Player extends MovingSprite {
     @Serialize private boolean alive = false;
     private boolean nameDirty = true;
     @Serialize private String name;
+    private boolean directionDirty = true;
+    @Serialize private double direction;
     
     public Player() {
         this(false, "Player");
@@ -39,6 +42,7 @@ public class Player extends MovingSprite {
     public Player(boolean self, String name) {
         this.self = self;
         this.name = name;
+        direction = 0;
         width = height = MapGenerator.TILE_SIZE - 10;
         weaponsData = new ArrayList<WeaponInfo>();
         for (Weapon w : Weapon.values()) {
@@ -56,7 +60,10 @@ public class Player extends MovingSprite {
             return;
         }
         Image sprite = ResourceResolver.getResourceResolver().resolveResource("/player.png");
-        g.drawImage(sprite, (int) (getWidth() / 2 - sprite.getWidth(null) / 2), (int) (getHeight()/ 2 - sprite.getHeight(null)/ 2), null);
+        AffineTransform  af = new AffineTransform();
+        af.rotate(getDirection(), getWidth() / 2, getHeight() / 2);
+        af.translate(getWidth() / 2 - sprite.getWidth(null) / 2, getHeight()/ 2 - sprite.getHeight(null)/ 2);
+        g.drawImage(sprite, af, null);
         if (!self) {
             Font f = Fonts.FONT_PRIMARY.deriveFont(8f);
             FontMetrics metrics = g.getFontMetrics(f);
@@ -306,6 +313,21 @@ public class Player extends MovingSprite {
     @Override
     public String toString() {
         return "[Player at " + getPosition().toString() + " with name " +getName() +"]";
+    }
+
+    /**
+     * @return the direction
+     */
+    public double getDirection() {
+        return direction;
+    }
+
+    /**
+     * @param direction the direction to set
+     */
+    public void setDirection(double direction) {
+        directionDirty = true;
+        this.direction = direction;
     }
     
 }

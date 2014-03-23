@@ -39,7 +39,10 @@ public class Vector2D {
         return value;
     }
     
-    
+    /*
+     Gets the angle with the +x axis as angle 0 and then goes CW
+     
+     */
     public static double getAngle(Vector2D vector) {
         double x = vector.x;
         double y = vector.y;
