@@ -67,7 +67,7 @@ public class AmmoPickup extends Sprite {
 
     @Override
     public String toString() {
-        return "[Ammo Pickup for " + getWeapon().getName() + " with " + amount + " cartreges at position " + getPosition() + "]";
+        return "[Ammo Pickup for " + getWeapon( ).getName() + " with " + amount + " cartreges at position " + getPosition() + "]";
     }
     
     
