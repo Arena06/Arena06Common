@@ -7,6 +7,7 @@ import com.assemblr.arena06.common.data.weapon.WeaponInfo;
 import com.assemblr.arena06.common.packet.Packet;
 import com.assemblr.arena06.common.resource.ResourceResolver;
 import com.assemblr.arena06.common.utils.Fonts;
+import com.assemblr.arena06.common.utils.Vector2D;
 import com.assemblr.arena06.common.utils.serialization.Serialize;
 import java.awt.Color;
 import java.awt.Font;
@@ -18,7 +19,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player extends MovingSprite {
+public class Player extends Sprite {
     
     private final boolean self;
     private boolean clientIsCurrent = true;
@@ -34,6 +35,10 @@ public class Player extends MovingSprite {
     @Serialize private String name;
     private boolean directionDirty = true;
     @Serialize private double direction;
+    private boolean xVelocityDirty = true;
+    @Serialize private double xVelocity;
+    private boolean yVelocityDirty = true;
+    @Serialize private double yVelocity;
     
     public Player() {
         this(false, "Player");
@@ -328,6 +333,23 @@ public class Player extends MovingSprite {
     public void setDirection(double direction) {
         directionDirty = true;
         this.direction = direction;
+    }
+    
+    /**
+     * @return the velocity
+     */
+    public Vector2D getVelocity() {
+        return new Vector2D(xVelocity, yVelocity);
+    }
+
+    /**
+     * @param velocity the velocity to set
+     */
+    public void setVelocity(Vector2D velocity) {
+        xVelocityDirty = true;
+        this.xVelocity = velocity.x;
+        yVelocityDirty = true;
+        this.yVelocity = velocity.y;
     }
     
 }
