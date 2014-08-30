@@ -59,6 +59,7 @@ public abstract class Sprite implements Renderable {
     public Map<String, Object> serializeState() {
         return serializeState(false);
     }
+    
     public Map<String, Object> serializeState(boolean sendAll) {
         Map<String, Object> state = new HashMap<String, Object>();
         Class<?> clazz = this.getClass();

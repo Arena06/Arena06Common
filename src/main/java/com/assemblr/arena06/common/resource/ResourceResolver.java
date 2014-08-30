@@ -25,7 +25,7 @@ public abstract class ResourceResolver {
 
     
     public abstract void unloadResources(ResourceBlock resources);
-    public abstract void loadResources(ResourceBlock resources) throws IOException;
+    public abstract void loadResources(ResourceBlock resources);
     public abstract Image resolveResource(String resourceLocation);
 
     private static ResourceResolver resolver;

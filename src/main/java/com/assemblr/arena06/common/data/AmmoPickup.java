@@ -6,15 +6,13 @@
 
 package com.assemblr.arena06.common.data;
 
-import com.assemblr.arena06.common.chat.ChatBroadcaster;
 import com.assemblr.arena06.common.data.weapon.Weapon;
-import com.assemblr.arena06.common.packet.Packet;
+import com.assemblr.arena06.common.resource.ResourceResolver;
 import com.assemblr.arena06.common.utils.Fonts;
 import com.assemblr.arena06.common.utils.serialization.Serialize;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Image;
 
 /**
  *
@@ -42,10 +40,12 @@ public class AmmoPickup extends Sprite {
     }
 
     public void render(Graphics2D g) {
-        g.setColor(Color.red);
-        g.drawRect(0, 0, (int) getWidth(), (int) getHeight());
-        g.setFont(Fonts.FONT_PRIMARY.deriveFont(12F));
-        g.drawString(getWeapon().getName(), 0, 10);
+        //g.setColor(Color.red);
+        //g.drawRect(0, 0, (int) getWidth(), (int) getHeight());
+        //g.setFont(Fonts.FONT_PRIMARY.deriveFont(12F));
+        //g.drawString(getWeapon().getName(), 0, 10);
+        Image icon = ResourceResolver.getResourceResolver().resolveResource("/" + getWeapon().getName() + "amo.png");
+        g.drawImage(icon, (int) (getWidth() / 2 - icon.getWidth(null) / 2), (int) (getHeight()/ 2 - icon.getHeight(null) / 2), null);
     }
 
     /**

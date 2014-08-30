@@ -15,7 +15,7 @@ import java.util.List;
  * @author Henry
  */
 public enum ResourceBlock {
-    SPRITES("/player.png");
+    SPRITES("/player.png", "/Pistolamo.png", "/Assault Rifleamo.png", "/Sniper Rifleamo.png", "/Shotgunamo.png");
     
     private List<String> resourceNames;
     private ResourceBlock(String ... resourceNames) {
